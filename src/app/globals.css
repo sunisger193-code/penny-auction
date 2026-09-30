@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #08090c;
+  --bg-secondary: #0f1117;
+  --bg-card: #141721;
+  --gold-primary: #e6c35c;
+  --gold-light: #fbe38e;
+  --gold-dark: #9b7e28;
+  --gold-border: rgba(230, 195, 92, 0.25);
+  --gold-glow: rgba(230, 195, 92, 0.15);
+}
+
+body {
+  background-color: #08090c;
+  color: #f1f5f9;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 8-Bit Pixel Typography Class for headers and retro badges */
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: -0.5px;
+}
+
+.font-mono-num {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Premium Gold Gradient Accents */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #fbe38e 0%, #e6c35c 50%, #9b7e28 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #fbe38e 0%, #e6c35c 50%, #b38f2e 100%);
+  color: #08090c;
+}
+
+.gold-card {
+  background: #11141d;
+  border: 1px solid rgba(230, 195, 92, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.gold-card:hover {
+  border-color: rgba(230, 195, 92, 0.45);
+  box-shadow: 0 8px 30px rgba(230, 195, 92, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Sharp Professional Pixel Buttons */
+.btn-gold {
+  background: linear-gradient(180deg, #fbe38e 0%, #e6c35c 100%);
+  color: #08090c;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid #9b7e28;
+  box-shadow: 0 2px 0 #785f1c, 0 4px 12px rgba(230, 195, 92, 0.2);
+  transition: all 0.1s ease;
+  user-select: none;
+}
+
+.btn-gold:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 0 #785f1c, 0 6px 16px rgba(230, 195, 92, 0.35);
+}
+
+.btn-gold:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #785f1c;
+}
+
+.btn-dark {
+  background: #181b26;
+  color: #e2e8f0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  border: 1px solid rgba(230, 195, 92, 0.2);
+  box-shadow: 0 2px 0 #000;
+  transition: all 0.1s ease;
+}
+
+.btn-dark:hover:not(:disabled) {
+  background: #202433;
+  border-color: rgba(230, 195, 92, 0.4);
+  color: #fbe38e;
+}
+
+.btn-dark:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #000;
+}
+
+.btn-red {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  border: 1px solid #7f1d1d;
+  box-shadow: 0 2px 0 #450a0a;
+}
+
+.btn-red:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #000;
+}
+
+/* Crisp Retro Scanlines (Refined & Subtle) */
+.scanlines-subtle {
+  position: relative;
+}
+
+.scanlines-subtle::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  z-index: 999;
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Sharp gold badge */
+.badge-gold {
+  background: rgba(230, 195, 92, 0.1);
+  border: 1px solid rgba(230, 195, 92, 0.3);
+  color: #e6c35c;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 4px 8px;
+}
+
+.badge-green {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 4px 8px;
+}
+
+.badge-red {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 4px 8px;
+}
+
+/* Blinking arcade animation */
+@keyframes gold-pulse {
+  0%, 100% { opacity: 1; border-color: rgba(230, 195, 92, 0.6); }
+  50% { opacity: 0.6; border-color: rgba(230, 195, 92, 0.2); }
+}
+
+.pulse-gold {
+  animation: gold-pulse 2s infinite ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #08090c;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2e3d;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e6c35c;
+}

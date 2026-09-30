@@ -1,0 +1,89 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String             @id @default(cuid())
+  username        String             @unique
+  email           String             @unique
+  password        String
+  role            String             @default("USER") // "USER" | "ADMIN"
+  credits         Int                @default(0)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  bids            Bid[]
+  leadingAuctions Auction[]          @relation("AuctionLeader")
+  wonAuctions     Auction[]          @relation("AuctionWinner")
+  topUpRequests   TopUpRequest[]
+  transactions    WalletTransaction[]
+}
+
+model Auction {
+  id               String       @id @default(cuid())
+  title            String
+  description      String
+  category         String       @default("Gaming Asset")
+  imageUrl         String       // Primary showcase image
+  images           String?      // JSON array of multiple image URLs: '["img1", "img2"]'
+  claimToken       String       // System-generated secure Discord voucher claim token
+  discordUrl       String?      @default("https://discord.gg/aurum8bit")
+  startingPrice    Float        @default(0.00)
+  currentPrice     Float        @default(0.00)
+  creditCostPerBid Int          @default(1)
+  bidIncrement     Float        @default(1.00)
+  status           String       @default("ACTIVE") // "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED" | "CANCELLED"
+  endsAt           DateTime
+  highestBidderId  String?
+  highestBidder    User?        @relation("AuctionLeader", fields: [highestBidderId], references: [id])
+  winnerId         String?
+  winner           User?        @relation("AuctionWinner", fields: [winnerId], references: [id])
+  settledAt        DateTime?
+  totalBids        Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  bids             Bid[]
+}
+
+model Bid {
+  id           String    @id @default(cuid())
+  auctionId    String
+  auction      Auction   @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount       Float     // Auction price after this bid
+  creditCost   Int       // Credits deducted for this bid (+1, +5, +10, +50)
+  createdAt    DateTime  @default(now())
+}
+
+model TopUpRequest {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount       Float     // Baht amount (1 Baht = 1 Credit)
+  credits      Int       // Credits to receive (1:1)
+  slipImage    String    // Base64 slip image or receipt path
+  bankRef      String?   // Reference number
+  status       String    @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED"
+  adminNotes   String?
+  reviewedAt   DateTime?
+  reviewedBy   String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model WalletTransaction {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         String    // "TOPUP" | "BID_DEDUCT" | "REFUND"
+  amount       Int       // Delta credits (-1, -5, -10, -50, +100)
+  balanceAfter Int
+  description  String
+  referenceId  String?   // Auction ID or TopUp Request ID
+  createdAt    DateTime  @default(now())
+}
