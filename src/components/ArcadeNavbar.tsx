@@ -102,16 +102,19 @@ export default function ArcadeNavbar() {
                 <PlusCircle className="w-3.5 h-3.5 text-[#e6c35c] group-hover:scale-110 transition-transform ml-1" />
               </a>
 
-              {/* Admin Link if role is ADMIN */}
-              {user.role === 'ADMIN' && (
-                <a
-                  href="/admin"
-                  className="btn-gold px-2.5 py-1.5 flex items-center gap-1.5"
-                >
-                  <Shield className="w-3.5 h-3.5 text-black" />
-                  <span className="hidden md:inline">ADMIN</span>
-                </a>
-              )}
+              {/* Admin Link */}
+              <a
+                href="/admin"
+                className={`px-2.5 py-1.5 flex items-center gap-1.5 transition-all text-xs font-pixel ${
+                  user.role === 'ADMIN'
+                    ? 'btn-gold text-black'
+                    : 'bg-[#12151f] hover:bg-[#e6c35c] text-[#e6c35c] hover:text-black border border-[#e6c35c]/30'
+                }`}
+                title="Admin Console (Master Passkey Protected)"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">ADMIN</span>
+              </a>
 
               {/* User badge */}
               <div className="bg-[#12151f] border border-gray-800 px-2.5 py-1.5 text-xs hidden lg:flex items-center gap-1.5 font-mono">
@@ -133,6 +136,14 @@ export default function ArcadeNavbar() {
             </>
           ) : (
             <div className="flex items-center gap-2">
+              <a
+                href="/admin"
+                className="px-2.5 py-2 bg-[#12151f] hover:bg-[#e6c35c] text-[#e6c35c] hover:text-black border border-[#e6c35c]/30 hover:border-[#e6c35c] text-xs font-pixel flex items-center gap-1.5 transition-all"
+                title="Admin Console (Master Passkey Protected)"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">ADMIN</span>
+              </a>
               <a
                 href="/login"
                 className="btn-dark px-3 py-2 flex items-center gap-1.5"

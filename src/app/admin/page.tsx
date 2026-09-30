@@ -33,7 +33,7 @@ import {
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { user, token, loading: authLoading } = useAuth();
+  const { user, token, loading: authLoading, refreshUser } = useAuth();
   const [activeTab, setActiveTab] = useState<'ACTIVE_LOTS' | 'SETTLED_LOTS' | 'SLIPS'>('ACTIVE_LOTS');
 
   // Master Admin Security Gate State
@@ -63,12 +63,7 @@ export default function AdminDashboardPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [copiedTokenId, setCopiedTokenId] = useState<string | null>(null);
 
-  // Authentication check: redirect to /login if not admin
-  useEffect(() => {
-    if (!authLoading && (!user || user.role !== 'ADMIN')) {
-      router.push('/login?redirect=/admin');
-    }
-  }, [user, authLoading, router]);
+  // Master Security Passkey Gate directly verifies passkey and provisions admin session
 
   // Check if admin gate was previously unlocked in this session
   useEffect(() => {
@@ -82,9 +77,15 @@ export default function AdminDashboardPage() {
 
   const fetchAdminData = useCallback(async () => {
     try {
+      const currentToken =
+        (typeof window !== 'undefined' ? localStorage.getItem('arcade_token') : null) || token;
+      const headers: Record<string, string> = currentToken
+        ? { Authorization: `Bearer ${currentToken}` }
+        : {};
+
       const [aucRes, slipRes] = await Promise.all([
-        fetch('/api/admin/auctions'),
-        fetch('/api/admin/topups'),
+        fetch('/api/admin/auctions', { headers }),
+        fetch('/api/admin/topups', { headers }),
       ]);
 
       if (aucRes.ok) {
@@ -100,13 +101,13 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
-    if (user?.role === 'ADMIN' && adminUnlocked) {
+    if (adminUnlocked) {
       fetchAdminData();
     }
-  }, [user, adminUnlocked, fetchAdminData]);
+  }, [adminUnlocked, fetchAdminData]);
 
   // Handle Master Security Token Verification
   const handleVerifyGateToken = async (e: React.FormEvent) => {
@@ -125,7 +126,6 @@ export default function AdminDashboardPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({ securityToken: securityPasskeyInput.trim() }),
       });
@@ -133,6 +133,12 @@ export default function AdminDashboardPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         soundFx.playCoin();
+        if (data.token) {
+          localStorage.setItem('arcade_token', data.token);
+          if (refreshUser) {
+            await refreshUser();
+          }
+        }
         sessionStorage.setItem('aurum_admin_unlocked', 'true');
         setAdminUnlocked(true);
         fetchAdminData();

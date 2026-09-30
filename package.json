@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "tsx server.ts",
     "dev:next": "next dev",
-    "build": "prisma generate && next build",
+    "build": "node scripts/prepare-prisma.js && prisma generate && next build",
     "start": "NODE_ENV=production tsx server.ts",
-    "postinstall": "prisma generate",
+    "postinstall": "node scripts/prepare-prisma.js && prisma generate",
     "db:push": "prisma db push",
     "db:push:pg": "prisma db push --schema=prisma/schema.postgresql.prisma",
     "seed": "tsx prisma/seed.ts",
